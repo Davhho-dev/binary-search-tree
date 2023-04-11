@@ -3,3 +3,5 @@ const Node = (data) => {
     const right = null
     return {data, left, right}
 }
+
+export default Node
