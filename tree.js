@@ -4,7 +4,28 @@ const Tree = (arr) => {
     let root = null
     let sortArr = removeDuplicates(arr)
     root =  buildTree(sortArr, 0, sortArr.length - 1)
-    prettyPrint(root)
+
+    const insert = (value) => {
+        if(sortArr.includes(value)) return null
+        const node = Node(value)
+        let current = root
+        let prevNode = null
+        while(current) {
+            if(value < current.data) {
+                prevNode = current
+                current = current.left
+            }else {
+                prevNode = current
+                current = current.right
+            }
+        }
+        if(value < prevNode.data) prevNode.left = node
+        else prevNode.right = node
+    }
+    // prettyPrint(root)
+    return {
+        insert
+    }
 }
 
 
