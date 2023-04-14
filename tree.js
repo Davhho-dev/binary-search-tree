@@ -6,12 +6,12 @@ const Tree = (arr) => {
     root =  buildTree(sortArr, 0, sortArr.length - 1)
 
     const insert = (value) => {
-        if(sortArr.includes(value)) return null
+        if (sortArr.includes(value)) return
         const node = Node(value)
         let current = root
         let prevNode = null
         while(current) {
-            if(value < current.data) {
+            if (value < current.data) {
                 prevNode = current
                 current = current.left
             }else {
@@ -21,13 +21,79 @@ const Tree = (arr) => {
         }
         if(value < prevNode.data) prevNode.left = node
         else prevNode.right = node
+        sortArr.push(value)
+        prettyPrint(root)
     }
-    // prettyPrint(root)
+
+    const remove = (value) => {
+        if (!sortArr.includes(value)) return null
+        let current = root
+        let prevNode = null
+        //determine which subsection of the tree to work on
+        while(current) {
+            if(value < current.data) {
+                prevNode = current
+                current = current.left
+            }else if (value > current.data){
+                prevNode = current
+                current = current.right
+            }else {
+                break
+            }
+        }  
+        //left side
+        if(prevNode === null) current = minChildNode(current)
+        else if (value < prevNode.data) {
+            if (current.left === null && current.right === null) prevNode.left = null
+            else if (current.left === null && current.right !== null) prevNode.left = minChildNode(current.right)
+            else if (current.left !== null && current.right === null) prevNode.left = minChildNode(current.left)
+            else if (current.left !== null && current.right !== null) prevNode.left = minChildNode(current)
+
+        } //right side 
+        else if (value > prevNode.data) {
+            if (current.left === null & current.right === null) prevNode.right = null
+            else if (current.left === null && current.right !== null) prevNode.right = minChildNode(current.right)
+            else if (current.left !== null && current.right === null) prevNode.right = minChildNode(current.left)
+            else if (current. left !== null && current.right !== null) prevNode.right = minChildNode(current)
+        }           
+        prettyPrint(root)
+    }
+    prettyPrint(root)
     return {
-        insert
+        insert,
+        remove
     }
 }
 
+//helper function to determine if child node contains children
+function minChildNode(node) {
+    let current = node
+    let left = null
+    let newNode = node
+    while(current) {
+        if (current.left === null & current.right === null) {
+            current = current.left
+            newNode.right = left
+            return newNode
+        }else if (current.right !== null) {
+            current = current.right
+            left = current
+            if (current.left === null) {
+                newNode.data = current.data
+                newNode.right = current.right
+                return newNode
+            }else {
+                while(current.left !== null) {
+                    left = current
+                    current = current.left
+                }
+                left.left = null
+                newNode.data = current.data
+                return newNode
+            }
+        }
+    }
+}
 
 function compareNumbers(a, b) {
     return a - b
@@ -36,7 +102,7 @@ function compareNumbers(a, b) {
 function removeDuplicates(arr) {
     let noDupArr = [];
     arr.forEach(value => {
-        if(!noDupArr.includes(value)) noDupArr.push(value)
+        if (!noDupArr.includes(value)) noDupArr.push(value)
     })
     return noDupArr.sort(compareNumbers)
 }
